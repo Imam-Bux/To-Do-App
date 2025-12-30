@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Task Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --primary-color: #6366f1;
+            --bg-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body{
+            background: var(--bg-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .todo-container{
+            min-height: 300px;
+            height: auto;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 24px;
+            box-shadow: 0px 20px 40px 0px (#00000033);
+            border: none;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+        }
+
+        h2{
+            color: #1e293b;
+            letter-spacing: -0.5px;
+            font-weight: 700;
+        }
+
+        .todo-header{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .todo-form{
+            padding: 8px;
+            border-radius: 16px;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .todo-form:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .input{
+            border-top-right-radius: 0;
+            border-top-left-radius: 0;
+            background: transparent;
+            padding-left: 15px;
+            font-size: 1rem;
+            width: 90%;
+            border: none;
+            outline: none;
+        }
+
+        .btn-add{
+            content: "+";
+            color: white;
+            width: 45px;
+            height: 45px;
+            font-size: 1.5rem;
+            padding: 4px 8px;
+            background: var(--primary-color);
+            border-radius: 50%;
+        }
+        .btn-add:hover{
+            background: var(--bg-color);
+        }
+        li{
+            padding: 15px;
+            background: white;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            width: 100%;
+            max-width: 500px;
+            border-radius: 16px;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            box-sizing: border-box;
+        }
+
+        i{
+            margin: 5px;
+            color: gray;
+        }
+
+        .completed{
+            color: gray;
+            text-decoration: line-through;
+        }
+
+        .delBtn:hover{
+            color: rgba(226, 3, 3, 0.959);
+        }
+
+        .editBtn:hover{
+            color: rgb(0, 140, 255);
+        }
+
+        .checkBtn:hover{
+            color: rgb(0, 255, 0);
+        }
+
+        .completeBtn{
+            color: rgb(0, 255, 0);
+        }
+
+        hr{
+            margin: 0 auto;
+            width: 100%;
+            border: 1px solid rgba(99, 102, 241, 0.5);
+        }
+
+        .clearBtn{
+            background: transparent;
+            border: none;
+            outline: none;
+            justify-self: right;
+        }
+        ul{
+            width: 100%;
+            max-width: 480px;
+            margin: 0;
+            padding: 0;
+            margin-bottom: 10px;
+        }
+        .foot-text{
+            color: gray;
+            font-size: 13px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+
+
+        }
+    </style>
+</head>
+<body>
+    <div class="todo-container">
+        <div class="todo-header mt-2 mb-2">
+            <h2 class="bolder"><i class="fa-solid fa-bolt-lightning text-warning me-2"></i>Task Pro</h2>
+            <p class="text-muted small">Stay organized, stay productive.</p>
+        </div>
+            <form action="#" class="todo-form">
+            <input type="text" name="input" id="input" placeholder="Add a new task..." class="input">
+            <button  class="btn-add border-0 rounded-pill" onclick="addtodo(this)">+</button>
+            </form>
+        <ul class="mt-2" id="todo-list"></ul>
+        <hr>
+        <div class="mt-2 d-flex justify-content-between">
+            <small class="text-muted" id="taskCount">0 tasks total</small>
+            <button class="text-danger border-0 clearBtn" onclick="clearAll()">Clear All</button>
+        </div>
+        <footer class="foot-text">
+    <span>
+        Made by Imam with <i class="fa-solid fa-heart text-danger"></i>
+        </span>
+        <span>&copy;2025 All rights reserved
+    </span>
+    </footer>
+    </div>
+
+    
+    <script>
+        const input = document.getElementById("input");
+        const todoList = document.getElementById("todo-list");
+        const taskCount = document.getElementById('taskCount');
+
+        function updateCount() {
+            const count = todoList.children.length;
+            taskCount.innerText = `${count} task${count !== 1 ? 's' : ''} total`;
+        }
+
+        function addtodo(ele){
+            event.preventDefault();
+            let cleaninput = input.value;
+            if(input.value === ""){
+                alert("Invalid Value!");
+                return;
+            }
+
+            let icons = document.createElement("div");
+            let div = document.createElement("div");
+            let li = document.createElement("li");
+            let delBtn = document.createElement("i");
+            let editBtn = document.createElement("i");
+            let check = document.createElement("i");
+
+            check.classList.add("fa-solid", "fa-check", "checkBtn");
+            editBtn.classList.add("fa-solid", "fa-pen", "editBtn");
+            delBtn.classList.add("fa-solid", "fa-trash", "delBtn");
+
+            div.innerText = input.value;
+
+            icons.append(check, editBtn, delBtn);
+            li.append(div, icons);
+            todoList.append(li);
+            updateCount();
+
+            delBtn.addEventListener("click", () => {
+                li.remove();
+                updateCount();
+            });
+
+            check.addEventListener("click", () => {
+                li.classList.add("completed");
+                check.classList.remove("fa-check","fa-solid","checkBtn");
+                check.classList.add("fa-solid","fa-check-double","completeBtn");
+                editBtn.remove();
+                delBtn.remove();
+            });
+
+            editBtn.addEventListener("click", () => {
+                input.value = cleaninput;
+                ele.textContent = "";
+                let updateIcon=document.createElement("i")
+                ele.append(updateIcon)
+                updateIcon.classList.add("fa-solid","fa-pen","text-white","fs-6")
+                ele.addEventListener("click", () => {
+                    li.textContent = input.value;
+                    ele.textContent = "+";
+                    li.remove();
+                    updateCount();
+                }, { once: true });
+            });
+
+            input.value = "";
+        }
+
+        function clearAll(){
+            if(confirm("Are you sure you want to delete all tasks?")) {
+                todoList.innerHTML = "";
+                updateCount();
+            }
+        }
+    </script>
+</body>
+</html>
